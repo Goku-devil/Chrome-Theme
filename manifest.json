@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "version": "2.1",
+  "name": "Custom Chrome Home",
+  "description": "A custom Chrome start page with your background image and useful shortcuts.",
+  "host_permissions": [
+    "https://suggestqueries.google.com/*",
+    "https://www.google.com/*"
+  ],
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  }
+}
