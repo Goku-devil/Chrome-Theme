@@ -387,9 +387,12 @@ function closeShortcutModal() {
 }
 
 function createShortcutTile(item, index) {
-	const tile = document.createElement("a");
+	const tile = document.createElement("div");
 	tile.className = "shortcut-tile";
-	tile.href = normalizeUrl(item.url);
+
+	const shortcutLink = document.createElement("a");
+	shortcutLink.className = "shortcut-link";
+	shortcutLink.href = normalizeUrl(item.url);
 
 	const iconWrap = document.createElement("span");
 	iconWrap.className = "shortcut-icon";
@@ -421,6 +424,7 @@ function createShortcutTile(item, index) {
 	editBtn.textContent = "Edit";
 	editBtn.addEventListener("click", (event) => {
 		event.preventDefault();
+		event.stopPropagation();
 		menu.hidden = true;
 		menuWrap.classList.remove("open");
 		openEditShortcutModal(index);
@@ -432,6 +436,7 @@ function createShortcutTile(item, index) {
 	deleteBtn.textContent = "Delete";
 	deleteBtn.addEventListener("click", (event) => {
 		event.preventDefault();
+		event.stopPropagation();
 		shortcuts.splice(index, 1);
 		saveShortcuts();
 		renderShortcuts();
@@ -459,7 +464,8 @@ function createShortcutTile(item, index) {
 	menuWrap.append(menuBtn, menu);
 
 	iconWrap.append(icon);
-	tile.append(iconWrap, label, menuWrap);
+	shortcutLink.append(iconWrap, label);
+	tile.append(shortcutLink, menuWrap);
 
 	return tile;
 }
