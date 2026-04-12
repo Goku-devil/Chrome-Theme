@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
-<head>
+<head>\
+	<!-- Version 1.1.2 -->
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Home</title>
@@ -25,9 +26,18 @@
 					<h1 class="headline">Start Focused</h1>
 					<p class="subtext">Search with Google or jump to your shortcuts.</p>
 				</div>
-				<div class="time-pill" aria-label="Date and Time">
-					<div id="clock" class="clock">--:--</div>
-					<div id="date" class="date">Loading date...</div>
+				<div class="time-and-quote">
+					<div class="time-pill" aria-label="Date and Time">
+						<div id="clock" class="clock">--:--</div>
+						<div id="date" class="date">Loading date...</div>
+					</div>
+
+					<div class="hero-quotes" aria-label="Tech Quotes">
+						<div class="quotes-head">
+							<h2>Tech Quotes</h2>
+						</div>
+						<div id="quotes-list" class="quotes-list" aria-live="polite"></div>
+					</div>
 				</div>
 			</div>
 
@@ -39,6 +49,7 @@
 						<div id="search-suggestions" class="search-suggestions" hidden role="listbox" aria-label="Google suggestions"></div>
 					</div>
 			</form>
+
 		</section>
 
 		<section class="links-card" aria-label="Quick Links">
@@ -80,9 +91,9 @@
 			<div class="customize-group">
 				<label>Main Page Template</label>
 				<div class="layout-grid" id="layout-grid">
-					<button type="button" class="layout-chip" data-layout="focus">Focus</button>
-					<button type="button" class="layout-chip" data-layout="split">Split</button>
-					<button type="button" class="layout-chip" data-layout="compact">Compact</button>
+					<button type="button" class="layout-chip" data-layout="centered">Centered</button>
+					<button type="button" class="layout-chip" data-layout="wide">Wide</button>
+					<button type="button" class="layout-chip" data-layout="minimal">Minimal</button>
 				</div>
 			</div>
 			<div class="customize-group">
@@ -154,10 +165,6 @@
 					<label for="custom-speed">Motion Speed</label>
 					<input id="custom-speed" type="range" min="6" max="16" value="8">
 				</div>
-			</div>
-			<div class="customize-group">
-				<label for="overlay-range">Overlay Intensity</label>
-				<input id="overlay-range" type="range" min="35" max="100" value="100">
 			</div>
 			<div class="customize-group">
 				<label for="bg-upload">Background Image</label>

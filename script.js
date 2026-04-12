@@ -4,6 +4,7 @@ const searchSuggestions = document.getElementById("search-suggestions");
 const clockEl = document.getElementById("clock");
 const dateEl = document.getElementById("date");
 const shortcutsGrid = document.getElementById("shortcuts-grid");
+const quotesList = document.getElementById("quotes-list");
 const shortcutModal = document.getElementById("shortcut-modal");
 const shortcutForm = document.getElementById("shortcut-form");
 const shortcutName = document.getElementById("shortcut-name");
@@ -17,7 +18,6 @@ const customizeClose = document.getElementById("customize-close");
 const customizeReset = document.getElementById("customize-reset");
 const themeSelect = document.getElementById("theme-select");
 const layoutGrid = document.getElementById("layout-grid");
-const overlayRange = document.getElementById("overlay-range");
 const bgUpload = document.getElementById("bg-upload");
 const templateGrid = document.getElementById("template-grid");
 const customTemplateControls = document.getElementById("custom-template-controls");
@@ -59,8 +59,7 @@ const themeTokens = {
 
 const defaultSettings = {
 	theme: "ocean",
-	layout: "focus",
-	overlay: 1,
+	layout: "centered",
 	background: DEFAULT_BACKGROUND,
 	template: "aurora",
 	custom: {
@@ -71,12 +70,35 @@ const defaultSettings = {
 	}
 };
 
+const layoutAliases = {
+	focus: "centered",
+	split: "wide",
+	compact: "minimal"
+};
+
+const validLayouts = new Set(["centered", "wide", "minimal"]);
+
 const defaultShortcuts = [
 	{ name: "Google", url: "https://www.google.com" },
 	{ name: "YouTube", url: "https://youtube.com" },
 	{ name: "Gmail", url: "https://mail.google.com" },
 	{ name: "GitHub", url: "https://github.com" },
 	{ name: "Drive", url: "https://drive.google.com" }
+];
+
+const techQuotes = [
+	{ text: "Any sufficiently advanced technology is indistinguishable from magic.", author: "Arthur C. Clarke" },
+	{ text: "The science of today is the technology of tomorrow.", author: "Edward Teller" },
+	{ text: "Talk is cheap. Show me the code.", author: "Linus Torvalds" },
+	{ text: "Programs must be written for people to read, and only incidentally for machines to execute.", author: "Harold Abelson" },
+	{ text: "Simplicity is prerequisite for reliability.", author: "Edsger W. Dijkstra" },
+	{ text: "First, solve the problem. Then, write the code.", author: "John Johnson" },
+	{ text: "The function of good software is to make the complex appear to be simple.", author: "Grady Booch" },
+	{ text: "It has become appallingly obvious that our technology has exceeded our humanity.", author: "Albert Einstein" },
+	{ text: "The best way to predict the future is to invent it.", author: "Alan Kay" },
+	{ text: "Code is like humor. When you have to explain it, it is bad.", author: "Cory House" },
+	{ text: "Before software can be reusable it first has to be usable.", author: "Ralph Johnson" },
+	{ text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs" }
 ];
 let shortcuts = [];
 let editingIndex = -1;
@@ -264,8 +286,16 @@ function setTemplate(templateName) {
 }
 
 function setLayout(layoutName) {
-	document.body.classList.remove("layout-focus", "layout-split", "layout-compact");
-	const safeLayout = layoutName || defaultSettings.layout;
+	document.body.classList.remove(
+		"layout-focus",
+		"layout-split",
+		"layout-compact",
+		"layout-centered",
+		"layout-wide",
+		"layout-minimal"
+	);
+	const candidate = layoutAliases[layoutName] || layoutName;
+	const safeLayout = validLayouts.has(candidate) ? candidate : defaultSettings.layout;
 	document.body.classList.add(`layout-${safeLayout}`);
 	if (layoutGrid) {
 		layoutGrid.querySelectorAll(".layout-chip").forEach((chip) => {
@@ -286,11 +316,6 @@ function applyCustomTemplate() {
 	if (customSpeed) customSpeed.value = String(custom.speed);
 }
 
-function setOverlay(value) {
-	const safeValue = Math.max(0.35, Math.min(1, Number(value) || 1));
-	root.style.setProperty("--overlay-opacity", safeValue.toFixed(2));
-}
-
 function saveSettings() {
 	localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
 }
@@ -303,10 +328,10 @@ function loadSettings() {
 
 	try {
 		const parsed = JSON.parse(raw);
+		const parsedLayout = layoutAliases[parsed.layout] || parsed.layout;
 		return {
 			theme: parsed.theme in themeTokens ? parsed.theme : defaultSettings.theme,
-			layout: parsed.layout || defaultSettings.layout,
-			overlay: Number(parsed.overlay) || defaultSettings.overlay,
+			layout: validLayouts.has(parsedLayout) ? parsedLayout : defaultSettings.layout,
 			background: parsed.background || defaultSettings.background,
 			template: parsed.template || defaultSettings.template,
 			custom: {
@@ -324,13 +349,11 @@ function loadSettings() {
 function applySettings() {
 	setTheme(settings.theme);
 	setLayout(settings.layout);
-	setOverlay(settings.overlay);
 	setBackground(settings.background);
 	setTemplate(settings.template);
 	applyCustomTemplate();
 
 	themeSelect.value = settings.theme;
-	overlayRange.value = String(Math.round(settings.overlay * 100));
 }
 
 function openCustomizeModal() {
@@ -497,6 +520,36 @@ function renderShortcuts() {
 	shortcutsGrid.append(createAddTile());
 }
 
+function pickRandomQuotes(count) {
+	const pool = [...techQuotes];
+	for (let index = pool.length - 1; index > 0; index -= 1) {
+		const swapIndex = Math.floor(Math.random() * (index + 1));
+		[pool[index], pool[swapIndex]] = [pool[swapIndex], pool[index]];
+	}
+	return pool.slice(0, Math.max(1, Math.min(count, pool.length)));
+}
+
+function renderTechQuotes() {
+	if (!quotesList) {
+		return;
+	}
+
+	quotesList.innerHTML = "";
+	pickRandomQuotes(1).forEach((quote) => {
+		const item = document.createElement("figure");
+		item.className = "quote-item";
+
+		const body = document.createElement("blockquote");
+		body.textContent = quote.text;
+
+		const author = document.createElement("figcaption");
+		author.textContent = quote.author;
+
+		item.append(body, author);
+		quotesList.append(item);
+	});
+}
+
 function looksLikeUrl(value) {
 	return /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(value);
 }
@@ -597,12 +650,6 @@ if (layoutGrid) {
 		saveSettings();
 	});
 }
-
-overlayRange.addEventListener("input", () => {
-	settings.overlay = Number(overlayRange.value) / 100;
-	setOverlay(settings.overlay);
-	saveSettings();
-});
 
 bgUpload.addEventListener("change", () => {
 	const file = bgUpload.files && bgUpload.files[0];
@@ -709,3 +756,4 @@ shortcuts = loadShortcuts();
 settings = loadSettings();
 applySettings();
 renderShortcuts();
+renderTechQuotes();

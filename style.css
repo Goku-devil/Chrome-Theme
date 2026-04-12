@@ -149,6 +149,92 @@ body {
 	gap: 16px;
 }
 
+.hero-quotes {
+	margin: 0;
+	width: auto;
+	max-width: 470px;
+	flex: 1 1 300px;
+	min-height: 96px;
+	padding: 12px;
+	border-radius: 16px;
+	border: 1px solid color-mix(in srgb, var(--accent) 24%, rgba(255, 255, 255, 0.1));
+	background:
+		linear-gradient(160deg, color-mix(in srgb, var(--accent) 12%, transparent), transparent 52%),
+		linear-gradient(320deg, color-mix(in srgb, var(--accent-2) 14%, transparent), rgba(255, 255, 255, 0.03));
+	box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.09);
+	backdrop-filter: blur(10px);
+	display: grid;
+	gap: 8px;
+	position: relative;
+}
+
+.quotes-head {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.quotes-head h2 {
+	margin: 0;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: color-mix(in srgb, var(--accent) 55%, #ffffff);
+}
+
+.quotes-list {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 8px;
+}
+
+.quote-item {
+	margin: 0;
+	padding: 12px 12px 10px;
+	border-radius: 12px;
+	border: 1px solid color-mix(in srgb, var(--accent-2) 24%, rgba(255, 255, 255, 0.1));
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+	display: grid;
+	gap: 6px;
+	position: relative;
+}
+
+.quote-item::before {
+	content: "\201C";
+	position: absolute;
+	top: 1px;
+	left: 9px;
+	font-size: 34px;
+	line-height: 1;
+	font-family: Georgia, "Times New Roman", serif;
+	color: color-mix(in srgb, var(--accent) 45%, #ffffff);
+	pointer-events: none;
+}
+
+.quote-item blockquote {
+	margin: 0;
+	font-size: 13px;
+	line-height: 1.45;
+	font-style: italic;
+	font-family: Georgia, "Times New Roman", serif;
+	color: var(--text);
+	padding-left: 12px;
+	border-left: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+.quote-item figcaption {
+	font-size: 11px;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: color-mix(in srgb, var(--accent-2) 55%, #ffffff);
+	justify-self: end;
+}
+
+.quote-item figcaption::before {
+	content: "\2014 ";
+}
+
 .links-head {
 	display: flex;
 	justify-content: center;
@@ -360,6 +446,15 @@ body {
 	text-align: center;
 }
 
+.time-and-quote {
+	display: flex;
+	align-items: stretch;
+	justify-content: center;
+	gap: 10px;
+	width: min(760px, 100%);
+	flex-wrap: wrap;
+}
+
 .kicker {
 	margin: 0 0 8px;
 	color: var(--text-muted);
@@ -509,6 +604,7 @@ body {
 
 .time-pill {
 	width: fit-content;
+	min-height: 96px;
 	padding: 12px 18px;
 	border-radius: 16px;
 	border: 1px solid rgba(255, 255, 255, 0.2);
@@ -516,6 +612,7 @@ body {
 	display: grid;
 	gap: 6px;
 	min-width: 0;
+	flex: 0 0 auto;
 }
 
 .clock {
@@ -739,6 +836,8 @@ body {
 
 .customize-group select {
 	appearance: none;
+	color: #eef4ff;
+	text-shadow: none;
 	background-image:
 		linear-gradient(45deg, transparent 50%, rgba(76, 201, 240, 0.6) 50%),
 		linear-gradient(135deg, rgba(76, 201, 240, 0.6) 50%, transparent 50%),
@@ -751,6 +850,11 @@ body {
 	background-repeat: no-repeat;
 	padding-right: 36px;
 	cursor: pointer;
+}
+
+.customize-group select option {
+	color: #0f172a;
+	background: #f3f7ff;
 }
 
 .layout-grid {
@@ -1026,14 +1130,15 @@ body.template-midnight .card-b {
 	background: linear-gradient(145deg, rgba(15, 23, 42, 0.28), rgba(255, 255, 255, 0.03));
 }
 
-body.layout-focus .home-shell {
+body.layout-centered .home-shell {
 	grid-template-columns: 1fr;
 	grid-template-areas:
 		"hero"
 		"links";
 }
 
-body.layout-split .home-shell {
+body.layout-wide .home-shell {
+	width: min(1120px, calc(100vw - 32px));
 	grid-template-columns: 1fr;
 	grid-template-areas:
 		"hero"
@@ -1041,39 +1146,53 @@ body.layout-split .home-shell {
 	align-items: stretch;
 }
 
-body.layout-split .hero {
+body.layout-wide .hero {
 	display: grid;
 	align-content: center;
+	padding: 30px;
 }
 
-body.layout-compact .home-shell {
-	width: min(860px, calc(100vw - 32px));
+body.layout-wide .time-and-quote {
+	width: min(940px, 100%);
+}
+
+body.layout-wide .search-stack {
+	width: min(760px, 100%);
+}
+
+body.layout-minimal .home-shell {
+	width: min(820px, calc(100vw - 28px));
 	gap: 14px;
 	grid-template-areas:
 		"hero"
 		"links";
 }
 
-body.layout-compact .hero {
+body.layout-minimal .hero {
 	padding: 18px;
 	border-radius: 18px;
 }
 
-body.layout-compact .headline {
+body.layout-minimal .headline {
 	font-size: clamp(28px, 5vw, 46px);
 }
 
-body.layout-compact .subtext {
+body.layout-minimal .subtext {
 	margin-bottom: 14px;
 }
 
-body.layout-compact .time-pill {
+body.layout-minimal .time-pill {
 	padding: 12px 14px;
 }
 
-body.layout-compact .search {
+body.layout-minimal .search {
 	margin-top: 14px;
 }
+
+	body.layout-minimal .hero-quotes {
+		padding: 9px 10px;
+		gap: 8px;
+	}
 
 body.template-custom .bg-overlay {
 	background:
@@ -1141,6 +1260,12 @@ body.template-custom .card-b {
 		flex-direction: column;
 	}
 
+	.time-and-quote {
+		display: grid;
+		width: 100%;
+		gap: 8px;
+	}
+
 	.time-pill {
 		min-width: 0;
 		width: 100%;
@@ -1161,6 +1286,10 @@ body.template-custom .card-b {
 		grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
 		gap: 12px;
 		padding: 0 8px;
+	}
+
+	.quotes-list {
+		grid-template-columns: 1fr;
 	}
 
 	.shortcut-tile {
