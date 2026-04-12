@@ -7,6 +7,9 @@
     "https://suggestqueries.google.com/*",
     "https://www.google.com/*"
   ],
+  "icons":{
+    "128" : "asserts/Chrome.png"
+  },
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   }
