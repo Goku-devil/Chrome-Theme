@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<!-- Version 1.1.2 -->
+	<!-- Version 2.1.0 -->
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Home</title>
@@ -59,6 +59,28 @@
 			</div>
 			<div id="shortcuts-grid" class="shortcuts-grid" aria-live="polite"></div>
 		</section>
+
+		<section id="tasks-section" class="tasks-card" aria-label="Daily checklist" hidden>
+			<div class="tasks-head">
+				<div>
+					<p class="kicker">Daily Checklist</p>
+					<h2>Task Manager</h2>
+				</div>
+				<div id="task-count" class="task-count" aria-live="polite">0 open</div>
+			</div>
+			<form id="task-form" class="task-form">
+				<input id="task-input" class="task-input" type="text" maxlength="120" placeholder="Add a task you want to finish today" aria-label="New task">
+				<button type="submit" class="primary-btn">Add Task</button>
+			</form>
+			<ul id="task-list" class="task-list" aria-live="polite"></ul>
+			<div class="task-footer">
+				<p class="task-note">Keep the important work visible from the moment the tab opens.</p>
+				<div class="shortcut-actions">
+					<button id="task-clear-all" type="button" class="ghost-btn">Clear all</button>
+					<button id="task-clear-completed" type="button" class="ghost-btn">Clear completed</button>
+				</div>
+			</div>
+		</section>
 	</main>
 
 	<div id="shortcut-modal" class="shortcut-modal" hidden>
@@ -70,6 +92,31 @@
 				<div class="shortcut-actions">
 					<button type="button" id="shortcut-cancel" class="ghost-btn">Cancel</button>
 					<button type="submit" id="shortcut-submit" class="primary-btn">Add</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div id="task-warning-modal" class="task-warning-modal" hidden>
+		<div class="task-warning-dialog" role="dialog" aria-modal="true" aria-label="Pending tasks warning">
+			<h3>Pending Tasks</h3>
+			<p id="task-warning-message" class="task-warning-message">You still have incomplete tasks.</p>
+			<div class="shortcut-actions">
+				<button id="task-warning-dismiss" type="button" class="primary-btn">Review tasks</button>
+			</div>
+		</div>
+	</div>
+
+	<button id="quick-add-task-btn" class="quick-add-task-btn" type="button" hidden>Add Task</button>
+
+	<div id="quick-task-modal" class="quick-task-modal" hidden>
+		<div class="quick-task-dialog" role="dialog" aria-modal="true" aria-label="Quick add task">
+			<h3>Add Task</h3>
+			<form id="quick-task-form" class="shortcut-form">
+				<input id="quick-task-input" type="text" maxlength="120" placeholder="Type your task" required>
+				<div class="shortcut-actions">
+					<button id="quick-task-cancel" type="button" class="ghost-btn">Cancel</button>
+					<button type="submit" class="primary-btn">Add</button>
 				</div>
 			</form>
 		</div>
@@ -88,6 +135,20 @@
 					<option value="sunset">Sunset</option>
 					<option value="mono">Mono</option>
 				</select>
+			</div>
+			<div class="customize-group">
+				<div class="switch-row">
+					<div>
+						<label for="terminal-mode-toggle">Command-line aesthetic</label>
+						<p class="switch-help">Swap the page into a dark monospace workspace.</p>
+					</div>
+					<label class="toggle-switch" for="terminal-mode-toggle">
+						<input id="terminal-mode-toggle" type="checkbox">
+						<span class="toggle-track" aria-hidden="true">
+							<span class="toggle-thumb"></span>
+						</span>
+					</label>
+				</div>
 			</div>
 			<div class="customize-group">
 				<label>Main Page Template</label>

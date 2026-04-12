@@ -4,8 +4,23 @@ const searchSuggestions = document.getElementById("search-suggestions");
 const clockEl = document.getElementById("clock");
 const dateEl = document.getElementById("date");
 const shortcutsGrid = document.getElementById("shortcuts-grid");
+const tasksSection = document.getElementById("tasks-section");
+const taskForm = document.getElementById("task-form");
+const taskInput = document.getElementById("task-input");
+const taskList = document.getElementById("task-list");
+const taskCount = document.getElementById("task-count");
+const taskClearAll = document.getElementById("task-clear-all");
+const taskClearCompleted = document.getElementById("task-clear-completed");
+const quickAddTaskBtn = document.getElementById("quick-add-task-btn");
 const quotesList = document.getElementById("quotes-list");
 const shortcutModal = document.getElementById("shortcut-modal");
+const taskWarningModal = document.getElementById("task-warning-modal");
+const taskWarningMessage = document.getElementById("task-warning-message");
+const taskWarningDismiss = document.getElementById("task-warning-dismiss");
+const quickTaskModal = document.getElementById("quick-task-modal");
+const quickTaskForm = document.getElementById("quick-task-form");
+const quickTaskInput = document.getElementById("quick-task-input");
+const quickTaskCancel = document.getElementById("quick-task-cancel");
 const shortcutForm = document.getElementById("shortcut-form");
 const shortcutName = document.getElementById("shortcut-name");
 const shortcutUrl = document.getElementById("shortcut-url");
@@ -17,6 +32,7 @@ const customizeModal = document.getElementById("customize-modal");
 const customizeClose = document.getElementById("customize-close");
 const customizeReset = document.getElementById("customize-reset");
 const themeSelect = document.getElementById("theme-select");
+const terminalModeToggle = document.getElementById("terminal-mode-toggle");
 const layoutGrid = document.getElementById("layout-grid");
 const bgUpload = document.getElementById("bg-upload");
 const templateGrid = document.getElementById("template-grid");
@@ -28,6 +44,7 @@ const customSpeed = document.getElementById("custom-speed");
 const root = document.documentElement;
 
 const SHORTCUTS_KEY = "customHomeShortcuts";
+const TASKS_KEY = "customHomeTasks";
 const SETTINGS_KEY = "customHomeSettings";
 const DEFAULT_BACKGROUND = "asserts/image.png";
 const themeTokens = {
@@ -59,6 +76,7 @@ const themeTokens = {
 
 const defaultSettings = {
 	theme: "ocean",
+	terminalMode: false,
 	layout: "centered",
 	background: DEFAULT_BACKGROUND,
 	template: "aurora",
@@ -101,6 +119,7 @@ const techQuotes = [
 	{ text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs" }
 ];
 let shortcuts = [];
+let tasks = [];
 let editingIndex = -1;
 let settings = { ...defaultSettings };
 let suggestionItems = [];
@@ -255,6 +274,243 @@ function saveShortcuts() {
 	localStorage.setItem(SHORTCUTS_KEY, JSON.stringify(shortcuts));
 }
 
+function createTaskId() {
+	if (window.crypto && typeof window.crypto.randomUUID === "function") {
+		return window.crypto.randomUUID();
+	}
+	return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function loadTasks() {
+	const raw = localStorage.getItem(TASKS_KEY);
+	if (!raw) {
+		return [];
+	}
+
+	try {
+		const parsed = JSON.parse(raw);
+		if (!Array.isArray(parsed)) {
+			return [];
+		}
+		return parsed
+			.map((item) => {
+				if (typeof item === "string") {
+					return {
+						id: createTaskId(),
+						text: item,
+						done: false,
+						createdAt: Date.now()
+					};
+				}
+				if (!item || typeof item.text !== "string") {
+					return null;
+				}
+				return {
+					id: typeof item.id === "string" && item.id ? item.id : createTaskId(),
+					text: item.text,
+					done: Boolean(item.done),
+					createdAt: Number(item.createdAt) || Date.now()
+				};
+			})
+			.filter(Boolean)
+			.slice(0, 100);
+	} catch {
+		return [];
+	}
+}
+
+function saveTasks() {
+	localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+}
+
+function renderTasks() {
+	if (!taskList || !taskCount) {
+		return;
+	}
+
+	taskList.innerHTML = "";
+
+	if (!tasks.length) {
+		if (tasksSection) {
+			tasksSection.hidden = true;
+		}
+		if (quickAddTaskBtn) {
+			quickAddTaskBtn.hidden = false;
+		}
+		taskCount.textContent = "0 open";
+		if (taskClearAll) {
+			taskClearAll.disabled = true;
+		}
+		if (taskClearCompleted) {
+			taskClearCompleted.disabled = true;
+		}
+		return;
+	}
+
+	if (tasksSection) {
+		tasksSection.hidden = false;
+	}
+	if (quickAddTaskBtn) {
+		quickAddTaskBtn.hidden = true;
+	}
+
+	let openCount = 0;
+	let completedCount = 0;
+
+	tasks.forEach((task) => {
+		if (task.done) {
+			completedCount += 1;
+		} else {
+			openCount += 1;
+		}
+
+		const item = document.createElement("li");
+		item.className = `task-item${task.done ? " done" : ""}`;
+		item.dataset.taskId = task.id;
+
+		const label = document.createElement("label");
+		label.className = "task-check";
+
+		const checkbox = document.createElement("input");
+		checkbox.type = "checkbox";
+		checkbox.checked = task.done;
+
+		const mark = document.createElement("span");
+		mark.className = "task-mark";
+		mark.setAttribute("aria-hidden", "true");
+
+		const text = document.createElement("span");
+		text.className = "task-text";
+		text.textContent = task.text;
+
+		const removeButton = document.createElement("button");
+		removeButton.type = "button";
+		removeButton.className = "task-remove";
+		removeButton.setAttribute("aria-label", `Delete task: ${task.text}`);
+		removeButton.textContent = "×";
+
+		label.append(checkbox, mark, text);
+		item.append(label, removeButton);
+		taskList.append(item);
+	});
+
+	taskCount.textContent = `${openCount} open${completedCount ? ` · ${completedCount} done` : ""}`;
+	if (taskClearAll) {
+		taskClearAll.disabled = false;
+	}
+	if (taskClearCompleted) {
+		taskClearCompleted.disabled = completedCount === 0;
+	}
+}
+
+function addTask(text) {
+	const trimmed = text.trim();
+	if (!trimmed) {
+		return;
+	}
+
+	tasks.unshift({
+		id: createTaskId(),
+		text: trimmed,
+		done: false,
+		createdAt: Date.now()
+	});
+	saveTasks();
+	renderTasks();
+}
+
+function updateTask(taskId, updates) {
+	tasks = tasks.map((task) => {
+		if (task.id !== taskId) {
+			return task;
+		}
+		return { ...task, ...updates };
+	});
+	saveTasks();
+	renderTasks();
+}
+
+function removeTask(taskId) {
+	tasks = tasks.filter((task) => task.id !== taskId);
+	saveTasks();
+	renderTasks();
+}
+
+function clearCompletedTasks() {
+	tasks = tasks.filter((task) => !task.done);
+	saveTasks();
+	renderTasks();
+}
+
+function clearAllTasks() {
+	if (!tasks.length) {
+		return;
+	}
+	tasks = [];
+	saveTasks();
+	renderTasks();
+	closeTaskWarningPopup();
+}
+
+function closeQuickTaskModal() {
+	if (!quickTaskModal) {
+		return;
+	}
+	quickTaskModal.hidden = true;
+	if (quickTaskForm) {
+		quickTaskForm.reset();
+	}
+}
+
+function openQuickTaskModal() {
+	if (!quickTaskModal) {
+		if (tasksSection) {
+			tasksSection.hidden = false;
+		}
+		if (quickAddTaskBtn) {
+			quickAddTaskBtn.hidden = true;
+		}
+		if (taskInput) {
+			taskInput.focus();
+		}
+		return;
+	}
+	quickTaskModal.hidden = false;
+	if (quickTaskInput) {
+		quickTaskInput.focus();
+	}
+}
+
+function closeTaskWarningPopup() {
+	if (!taskWarningModal) {
+		return;
+	}
+	taskWarningModal.hidden = true;
+}
+
+function openTaskWarningPopup(pendingCount) {
+	if (!taskWarningModal || !taskWarningMessage) {
+		const label = pendingCount === 1 ? "task" : "tasks";
+		window.alert(`Warning: You still have ${pendingCount} incomplete ${label}.`);
+		return;
+	}
+
+	const label = pendingCount === 1 ? "task" : "tasks";
+	taskWarningMessage.textContent = `You still have ${pendingCount} incomplete ${label}. Finish them to keep your streak clean.`;
+	taskWarningModal.hidden = false;
+	if (taskWarningDismiss) {
+		taskWarningDismiss.focus();
+	}
+}
+
+function warnPendingTasksOnOpen() {
+	const pendingCount = tasks.filter((task) => !task.done).length;
+	if (pendingCount === 0) {
+		return;
+	}
+	openTaskWarningPopup(pendingCount);
+}
+
 function setTheme(themeName) {
 	const theme = themeTokens[themeName] || themeTokens.ocean;
 	root.style.setProperty("--accent", theme.accent);
@@ -331,6 +587,7 @@ function loadSettings() {
 		const parsedLayout = layoutAliases[parsed.layout] || parsed.layout;
 		return {
 			theme: parsed.theme in themeTokens ? parsed.theme : defaultSettings.theme,
+			terminalMode: Boolean(parsed.terminalMode),
 			layout: validLayouts.has(parsedLayout) ? parsedLayout : defaultSettings.layout,
 			background: parsed.background || defaultSettings.background,
 			template: parsed.template || defaultSettings.template,
@@ -348,12 +605,16 @@ function loadSettings() {
 
 function applySettings() {
 	setTheme(settings.theme);
+	document.body.classList.toggle("terminal-mode", Boolean(settings.terminalMode));
 	setLayout(settings.layout);
 	setBackground(settings.background);
 	setTemplate(settings.template);
 	applyCustomTemplate();
 
 	themeSelect.value = settings.theme;
+	if (terminalModeToggle) {
+		terminalModeToggle.checked = Boolean(settings.terminalMode);
+	}
 }
 
 function openCustomizeModal() {
@@ -574,6 +835,81 @@ searchForm.addEventListener("submit", (event) => {
 	clearSuggestions();
 });
 
+if (taskForm && taskInput) {
+	taskForm.addEventListener("submit", (event) => {
+		event.preventDefault();
+		addTask(taskInput.value);
+		taskInput.value = "";
+		taskInput.focus();
+	});
+}
+
+if (taskList) {
+	taskList.addEventListener("change", (event) => {
+		const checkbox = event.target.closest('input[type="checkbox"]');
+		if (!checkbox) {
+			return;
+		}
+
+		const taskItem = checkbox.closest(".task-item");
+		if (!taskItem || !taskItem.dataset.taskId) {
+			return;
+		}
+
+		updateTask(taskItem.dataset.taskId, { done: checkbox.checked });
+	});
+
+	taskList.addEventListener("click", (event) => {
+		const removeButton = event.target.closest(".task-remove");
+		if (!removeButton) {
+			return;
+		}
+
+		const taskItem = removeButton.closest(".task-item");
+		if (!taskItem || !taskItem.dataset.taskId) {
+			return;
+		}
+
+		removeTask(taskItem.dataset.taskId);
+	});
+}
+
+if (taskClearCompleted) {
+	taskClearCompleted.addEventListener("click", clearCompletedTasks);
+}
+
+if (taskClearAll) {
+	taskClearAll.addEventListener("click", clearAllTasks);
+}
+
+if (quickAddTaskBtn) {
+	quickAddTaskBtn.addEventListener("click", openQuickTaskModal);
+}
+
+if (quickTaskCancel) {
+	quickTaskCancel.addEventListener("click", closeQuickTaskModal);
+}
+
+if (quickTaskForm && quickTaskInput) {
+	quickTaskForm.addEventListener("submit", (event) => {
+		event.preventDefault();
+		const value = quickTaskInput.value.trim();
+		if (!value) {
+			return;
+		}
+		addTask(value);
+		closeQuickTaskModal();
+	});
+}
+
+if (quickTaskModal) {
+	quickTaskModal.addEventListener("click", (event) => {
+		if (event.target === quickTaskModal) {
+			closeQuickTaskModal();
+		}
+	});
+}
+
 searchInput.addEventListener("input", queueSuggestions);
 
 searchInput.addEventListener("focus", () => {
@@ -637,6 +973,14 @@ themeSelect.addEventListener("change", () => {
 	setTheme(settings.theme);
 	saveSettings();
 });
+
+if (terminalModeToggle) {
+	terminalModeToggle.addEventListener("change", () => {
+		settings.terminalMode = terminalModeToggle.checked;
+		document.body.classList.toggle("terminal-mode", settings.terminalMode);
+		saveSettings();
+	});
+}
 
 if (layoutGrid) {
 	layoutGrid.addEventListener("click", (event) => {
@@ -708,6 +1052,8 @@ document.addEventListener("keydown", (event) => {
 	if (event.key === "Escape") {
 		closeShortcutModal();
 		closeCustomizeModal();
+		closeTaskWarningPopup();
+		closeQuickTaskModal();
 	}
 });
 
@@ -732,6 +1078,18 @@ shortcutModal.addEventListener("click", (event) => {
 	}
 });
 
+if (taskWarningDismiss) {
+	taskWarningDismiss.addEventListener("click", closeTaskWarningPopup);
+}
+
+if (taskWarningModal) {
+	taskWarningModal.addEventListener("click", (event) => {
+		if (event.target === taskWarningModal) {
+			closeTaskWarningPopup();
+		}
+	});
+}
+
 shortcutForm.addEventListener("submit", (event) => {
 	event.preventDefault();
 
@@ -753,7 +1111,10 @@ shortcutForm.addEventListener("submit", (event) => {
 });
 
 shortcuts = loadShortcuts();
+tasks = loadTasks();
 settings = loadSettings();
 applySettings();
 renderShortcuts();
+renderTasks();
 renderTechQuotes();
+warnPendingTasksOnOpen();
