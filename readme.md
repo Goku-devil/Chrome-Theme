@@ -1,134 +1,144 @@
-# Chrome Home Page — Feature Documentation
+# Custom Chrome Home Documentation
 
-> **Page Title:** Home
-> **File Location:** G:/Chrome Themes/newtab.html
-> **Purpose:** A personalized productivity-focused browser home page
+Custom Chrome Home is a Chrome extension that replaces the New Tab page with a productivity dashboard.
 
----
+## 1. Overview
 
-## 1. Header / Branding Section
+The extension provides:
 
-- **Brand Label:** CHROME HOME — a small uppercase label at the top center
-- **Main Headline:** Start Focused — large bold text serving as the page motto
-- **Subtitle:** Search with Google or jump to your shortcuts
+- Live clock and date
+- Google search with autocomplete suggestions
+- Editable quick shortcuts with favicons
+- Built-in task manager with persistent state
+- Theme, layout, and animated background customization
+- Optional terminal-style visual mode
 
----
+## 2. Project Structure
 
-## 2. Live Clock & Date Widget
-
-- **Clock Display:** Shows current time in 12-hour format with AM/PM
-- **Date Display:** Shows full date in readable format
-- **Live Updates:** Both update in real time using JavaScript
-
----
-
-## 3. Tech Quotes Section
-
-- **Section Label:** TECH QUOTES in teal uppercase text
-- **Quote Display:** Curated tech/motivational quote with quotation mark icon
-- **Author Attribution:** Author name in all caps, right-aligned
-- **Dynamic Updates:** Uses aria-live for accessibility and auto-refresh
-
----
-
-## 4. Google Search Bar
-
-- **Function:** Fully functional search input that submits to Google Search
-- **Dual Purpose:** Search queries or direct URL navigation
-- **Design:** Wide rounded bar centered below clock/quote section
-
----
-
-## 5. Shortcuts Section
-
-- **Pre-configured Shortcuts (5):** Google, YouTube, Gmail, GitHub, Drive
-- **Click Behavior:** Each tile opens the respective website immediately
-
----
-
-## 6. Add Shortcut Button
-
-- **Appearance:** Dashed-outline button with + symbol
-- **Dialog Fields:** Name and URL inputs
-- **Action Buttons:** Cancel and Add
-
----
-
-## 7. ADD TASK Button
-
-- **Location:** Bottom-right corner of the page
-- **Click Behavior:** Opens Add Task modal with text input
-- **Purpose:** Lightweight task manager for quick to-dos
-
----
-
-## 8. Customize Button & Panel
-
-### 8.1 Theme Selector
-- **Options:** Ocean, Emerald, Sunset, Mono
-
-### 8.2 Command-Line Aesthetic Toggle
-- **Effect:** Swaps page into dark monospace workspace
-
-### 8.3 Main Page Template
-- **Options:** Centered, Wide, Minimal
-
-### 8.4 Background Template
-- **Options:** Aurora, Prism, Dark Wave, Neon Grid, Sunrise, Midnight, Fluid Flow, Pulse Ring, Spiral Orbit, Bouncing BG, Custom
-
-### 8.5 Background Image Uploader
-- **Function:** Upload custom image as page background
-
-### 8.6 Reset & Done Buttons
-- **Reset:** Reverts to defaults
-- **Done:** Saves changes and closes panel
-
----
-
-## Summary Table
-
-| # | Feature | Type | Description |
-|---|---|---|---|
-| 1 | Header | Static | Brand label + Start Focused headline |
-| 2 | Clock | Dynamic | Live 12-hour time display |
-| 3 | Date | Dynamic | Live full date display |
-| 4 | Tech Quotes | Dynamic | Rotating tech quote with author |
-| 5 | Search Bar | Interactive | Google search or URL navigation |
-| 6 | Shortcuts | Interactive | 5 clickable website tiles |
-| 7 | Add Shortcut | Modal | Create custom shortcuts |
-| 8 | Add Task | Modal | Quick task capture |
-| 9 | Customize | Panel | Themes templates backgrounds |
-| 10 | Theme Selector | Dropdown | Ocean Emerald Sunset Mono |
-| 11 | Command-Line Toggle | Switch | Dark monospace aesthetic |
-| 12 | Page Template | Buttons | Centered Wide Minimal |
-| 13 | Background Templates | Grid | 10 animated backgrounds |
-| 14 | Custom Image | File Input | Upload own background |
-
----
-
-## Quick Reference Guide
-
-| Action | How To |
+| Path | Purpose |
 |---|---|
-| Search the web | Click search bar, type query, press Enter |
-| Open a website | Type URL in search bar, press Enter |
-| Open a shortcut | Click any shortcut tile |
-| Add a shortcut | Click + button, enter name and URL, click Add |
-| Add a task | Click ADD TASK, type task, click Add |
-| Change theme | Click Customize, select from Theme dropdown |
-| Change background | Click Customize, select from Background Template grid |
-| Upload custom image | Click Customize, click Choose File |
-| Reset to defaults | Click Customize, click Reset |
-| Save customizations | Click Customize, click Done |
+| `manifest.json` | Chrome extension manifest (MV3) and New Tab override |
+| `newtab.html` | Main page markup and UI structure |
+| `style.css` | Styling, layouts, themes, and animation templates |
+| `script.js` | App logic (search, shortcuts, tasks, settings, persistence) |
+| `asserts/image.png` | Default background image |
+| `asserts/icons8-home-48.png` | Extension/New Tab icon |
+| `INSTALL.md` | Quick installation guide |
 
----
+## 3. Installation
 
-*Documentation generated on April 12, 2026*`;
+1. Open Chrome and go to `chrome://extensions`.
+2. Enable **Developer mode**.
+3. Click **Load unpacked**.
+4. Select the root project folder (`Chrome Themes`).
+5. Open a new tab to verify the custom home page loads.
 
-const blob = new Blob([md], {type: 'text/markdown'});
-const url = URL.createObjectURL(blob);
-const a = document.createElement('a');
-a.href = url;
-a.download = 'ChromeHome_FeatureDocs.md';
-a.click();
-URL.revokeObjectURL(url);
+## 4. Runtime Features
+
+### 4.1 Search
+
+- Submits normal queries to Google.
+- Detects URL-like input and navigates directly.
+- Fetches suggestions from the Google suggestions endpoint.
+- Supports keyboard navigation for suggestions (`ArrowUp`, `ArrowDown`, `Enter`, `Escape`).
+
+### 4.2 Shortcuts
+
+- Includes default shortcuts on first load.
+- Supports add, edit, and delete actions.
+- Displays each site favicon using the Google favicon service.
+- Persists to local storage.
+
+### 4.3 Tasks
+
+- Add tasks from the main form or quick-add modal.
+- Toggle complete/incomplete state.
+- Remove individual tasks.
+- Clear completed or clear all tasks.
+- Shows a warning modal when opening the page with pending tasks.
+
+### 4.4 Customization
+
+- Theme selection: `ocean`, `emerald`, `sunset`, `mono`
+- Command-line aesthetic toggle (`terminal-mode`)
+- Page layout options: `centered`, `wide`, `minimal`
+- Background templates:
+	- `aurora`
+	- `prism`
+	- `dark-wave`
+	- `neon-grid`
+	- `sunrise`
+	- `midnight`
+	- `fluid-flow`
+	- `pulse-ring`
+	- `spiral-orbit`
+	- `bouncing-bg`
+	- `custom`
+- Custom template controls: primary color, secondary color, glow color, motion speed
+- Optional custom background image upload
+
+## 5. Data Persistence
+
+All data is saved in browser local storage.
+
+| Key | Value |
+|---|---|
+| `customHomeShortcuts` | Array of shortcut objects `{ name, url }` |
+| `customHomeTasks` | Array of task objects `{ id, text, done, createdAt }` |
+| `customHomeSettings` | Settings object for theme, layout, template, and background |
+
+### Default Settings
+
+- `theme`: `ocean`
+- `terminalMode`: `false`
+- `layout`: `centered`
+- `background`: `asserts/image.png`
+- `template`: `aurora`
+- `custom`:
+	- `primary`: `#4cc9f0`
+	- `secondary`: `#3a86ff`
+	- `glow`: `#ffffff`
+	- `speed`: `8`
+
+## 6. Permissions and External Calls
+
+Declared in `manifest.json`:
+
+- `https://suggestqueries.google.com/*` for search suggestions
+- `https://www.google.com/*` for search and favicon/suggestion-related requests
+
+No backend service is used. All state remains local to the browser profile.
+
+## 7. Development Notes
+
+- Manifest version: `3`
+- New Tab override entry: `chrome_url_overrides.newtab = newtab.html`
+- Main logic initialization sequence:
+	1. Load shortcuts
+	2. Load tasks
+	3. Load settings
+	4. Apply settings
+	5. Render UI
+
+## 8. Troubleshooting
+
+### Extension does not update after editing
+
+1. Go to `chrome://extensions`.
+2. Click reload on the extension card.
+3. Open a new tab again.
+
+### Suggestions are not appearing
+
+- Confirm internet connectivity.
+- Confirm extension host permissions were not modified.
+
+### Background resets unexpectedly
+
+- Check whether local storage was cleared.
+- Reapply settings and verify browser profile persistence settings.
+
+## 9. Version
+
+- Extension version: `1.1.2`
+- Last documentation update: April 12, 2026
