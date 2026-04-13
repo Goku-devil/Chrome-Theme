@@ -648,9 +648,16 @@ body.terminal-mode .bg-overlay {
 	pointer-events: auto;
 }
 
+.shortcut-tile:hover .shortcut-menu-btn,
 .shortcut-tile:focus-within .shortcut-menu-btn,
 .shortcut-menu-wrap.open .shortcut-menu-btn {
 	display: flex;
+}
+
+@media (hover: none), (pointer: coarse) {
+	.shortcut-menu-btn {
+		display: flex;
+	}
 }
 
 .shortcut-menu-btn:hover {
