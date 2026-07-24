@@ -1,31 +1,41 @@
 # Install the Extension
 
-This project is a Chromium extension that replaces the New Tab page.
+This project is a Chromium extension that replaces your default New Tab page.
 
-## Guide for installing on edge
-Go to the official Edge Add-ons store to install the extension directly. Please note that this method only works for the Microsoft Edge browser.
+## Install on Microsoft Edge
 
-To install it on other browsers, please follow the alternative method specified below.
-For Edge,[click here](https://microsoftedge.microsoft.com/addons/detail/pfhncogmoeopdpfokomlldgigafbbgdk)
+You can install the extension directly from the official store. *Note: This method is exclusively for the Microsoft Edge browser.* 
 
-## Step-by-step Guide for other chromium based Browsers
+👉 **[Install from the Edge Add-ons Store](https://microsoftedge.microsoft.com/addons/detail/pfhncogmoeopdpfokomlldgigafbbgdk)**
 
-1. Open Google Chrome.
-2. In the address bar, go to `chrome://extensions`.
-3. Turn on **Developer mode** in the top-right corner.
-4. Click **Load unpacked**.
-5. Select the project folder: `Chrome Themes`.
-6. Chrome will load the extension immediately.
-7. Open a new tab to see the custom home page.
+To install the extension on other browsers, please follow the manual method below.
 
-## If you make changes
+---
 
-1. Keep the project folder on your computer.
-2. After editing files, go back to `chrome://extensions`.
-3. Click the reload button on this extension card.
-4. Open a new tab again to see the latest version.
+## Install on Other Chromium-Based Browsers 
 
-## Notes
+For browsers like Google Chrome, Brave, or Vivaldi, you will need to load the extension manually:
 
-- Do not select the `asserts` folder directly. Load the main project folder instead.
-- If Chrome does not show the new tab page right away, reload the extension and open a new tab again.
+1. Open your browser and go to `chrome://extensions` in the address bar.
+2. Toggle on **Developer mode** in the top-right corner.
+3. Click the **Load unpacked** button.
+4. Select the main project folder (e.g., `Chrome Themes`).
+5. The browser will load the extension immediately. Open a new tab to see your custom home page!
+
+---
+
+## Applying Local Changes
+
+If you are editing the code, follow these steps to see your updates:
+
+1. Keep the project folder saved on your computer.
+2. After editing and saving your files, go back to `chrome://extensions`.
+3. Find this extension's card and click the **Reload** (refresh) icon.
+4. Open a new tab to see the latest version of your work.
+
+---
+
+## Important Notes
+
+- **Folder Selection:** Always load the main project folder. Do not select subfolders (like the `assets` folder) directly.
+- **Troubleshooting:** If the browser does not show the new tab page right away, reload the extension on the extensions page and open a fresh tab.
