@@ -1,144 +1,159 @@
 # Custom Chrome Home Documentation
 
-Custom Chrome Home is a Chromium extension that replaces the New Tab page with a productivity dashboard.
+**Custom Chrome Home** is a Chromium extension that replaces the default New Tab page
+with a highly customizable productivity dashboard.
+
+---
 
 ## 1. Overview
 
-The extension provides:
+The extension provides a centralized, distraction-free hub featuring:
 
-- Live clock and date
+- Live clock and date display
 - Google search with autocomplete suggestions
-- Editable quick shortcuts with favicons
+- Editable quick shortcuts with automatic favicons
 - Built-in task manager with persistent state
-- Theme, layout, and animated background customization
-- Optional terminal-style visual mode
+- Extensive customization (themes, layouts, and animated backgrounds)
+- Optional terminal-style visual mode for a developer aesthetic
+
+---
 
 ## 2. Project Structure
 
 | Path | Purpose |
 |---|---|
-| `manifest.json` | Chrome extension manifest (MV3) and New Tab override |
-| `newtab.html` | Main page markup and UI structure |
-| `style.css` | Styling, layouts, themes, and animation templates |
-| `script.js` | App logic (search, shortcuts, tasks, settings, persistence) |
-| `asserts/image.png` | Default background image |
-| `asserts/icons8-home-48.png` | Extension/New Tab icon |
-| `INSTALL.md` | Quick installation guide |
+| `manifest.json` | Chrome extension manifest (MV3) and New Tab override configurations. |
+| `newtab.html` | Main page markup and UI structure. |
+
+| `style.css` | Styling, layouts, themes, and animation templates. |
+| `script.js` | Core application logic (search, shortcuts, tasks, settings, and persistence). |
+| `assets/image.png` | Default background image. |
+| `assets/icons8-home-48.png` | Extension and New Tab icon. |
+| `INSTALL.md` | Quick installation guide. |
+
+---
 
 ## 3. Installation
 
-1. Open Chrome and go to `chrome://extensions`.
-2. Enable **Developer mode**.
-3. Click **Load unpacked**.
-4. Select the root project folder (`Chrome Themes`).
-5. Open a new tab to verify the custom home page loads.
+For detailed manual installation instructions, please refer to the `INSTALL.md` file.
+
+To install the extension directly on Microsoft Edge, download it from the official store:
+�� **[Install from the Edge Add-on
+Store](https://microsoftedge.microsoft.com/addons/detail/pfhncogmoeopdpfokomlldgiga
+fbbgdk)**
+
+---
 
 ## 4. Runtime Features
 
 ### 4.1 Search
-
-- Submits normal queries to Google.
-- Detects URL-like input and navigates directly.
-- Fetches suggestions from the Google suggestions endpoint.
-- Supports keyboard navigation for suggestions (`ArrowUp`, `ArrowDown`, `Enter`, `Escape`).
+- Submits standard queries directly to Google.
+- Detects URL-like input and navigates to the site directly.
+- Fetches real-time suggestions using the Google suggestions endpoint.
+- Supports full keyboard navigation (`ArrowUp`, `ArrowDown`, `Enter`, `Escape`).
 
 ### 4.2 Shortcuts
+- Populates with default shortcuts on the first load.
+- Allows users to add, edit, and delete custom shortcuts.
+- Automatically fetches and displays site favicons using the Google favicon service.
+- Saves all shortcut data to local storage.
 
-- Includes default shortcuts on first load.
-- Supports add, edit, and delete actions.
-- Displays each site favicon using the Google favicon service.
-- Persists to local storage.
-
-### 4.3 Tasks
-
-- Add tasks from the main form or quick-add modal.
-- Toggle complete/incomplete state.
-- Remove individual tasks.
-- Clear completed or clear all tasks.
-- Shows a warning modal when opening the page with pending tasks.
+### 4.3 Task Manager
+- Add tasks via the main form or a quick-add modal.
+- Toggle tasks between complete and incomplete states.
+- Delete individual tasks, clear all completed tasks, or wipe the entire list.
+- **Smart Alert:** Displays a warning modal when opening a new tab if there are pending
+tasks.
 
 ### 4.4 Customization
+- **Themes:** `ocean`, `emerald`, `sunset`, `mono`
+- **Visual Modes:** Standard or `terminal-mode` (command-line aesthetic)
+- **Layouts:** `centered`, `wide`, `minimal`
+- **Background Templates:**
+`aurora`, `prism`, `dark-wave`, `neon-grid`, `sunrise`, `midnight`, `fluid-flow`, `pulse-ring`,
+`spiral-orbit`, `bouncing-bg`, `custom`
+- **Custom Template Controls:** Fine-tune the primary color, secondary color, glow color,
+and motion speed.
+- **Custom Image:** Support for uploading a personal background image.
 
-- Theme selection: `ocean`, `emerald`, `sunset`, `mono`
-- Command-line aesthetic toggle (`terminal-mode`)
-- Page layout options: `centered`, `wide`, `minimal`
-- Background templates:
-	- `aurora`
-	- `prism`
-	- `dark-wave`
-	- `neon-grid`
-	- `sunrise`
-	- `midnight`
-	- `fluid-flow`
-	- `pulse-ring`
-	- `spiral-orbit`
-	- `bouncing-bg`
-	- `custom`
-- Custom template controls: primary color, secondary color, glow color, motion speed
-- Optional custom background image upload
+---
 
 ## 5. Data Persistence
 
-All data is saved in browser local storage.
+All user data and preferences are saved locally in the browser profile using local storage. No
+external databases are used.
 
-| Key | Value |
+| Key | Description |
 |---|---|
-| `customHomeShortcuts` | Array of shortcut objects `{ name, url }` |
-| `customHomeTasks` | Array of task objects `{ id, text, done, createdAt }` |
-| `customHomeSettings` | Settings object for theme, layout, template, and background |
+| `customHomeShortcuts` | Array of shortcut objects: `{ name, url }` |
+| `customHomeTasks` | Array of task objects: `{ id, text, done, createdAt }` |
+| `customHomeSettings` | Object storing theme, layout, template, and background
+preferences. |
 
-### Default Settings
+### Default Settings Configuration
+```json
+{
+&quot;theme&quot;: &quot;ocean&quot;,
+&quot;terminalMode&quot;: false,
+&quot;layout&quot;: &quot;centered&quot;,
+&quot;background&quot;: &quot;assets/image.png&quot;,
+&quot;template&quot;: &quot;aurora&quot;,
+&quot;custom&quot;: {
+&quot;primary&quot;: &quot;#4cc9f0&quot;,
+&quot;secondary&quot;: &quot;#3a86ff&quot;,
+&quot;glow&quot;: &quot;#ffffff&quot;,
+&quot;speed&quot;: 8
+}
+}
+```
 
-- `theme`: `ocean`
-- `terminalMode`: `false`
-- `layout`: `centered`
-- `background`: `asserts/image.png`
-- `template`: `aurora`
-- `custom`:
-	- `primary`: `#4cc9f0`
-	- `secondary`: `#3a86ff`
-	- `glow`: `#ffffff`
-	- `speed`: `8`
+---
 
 ## 6. Permissions and External Calls
 
 Declared in `manifest.json`:
+- `https://suggestqueries.google.com/*` — Used for fetching search autocomplete
+suggestions.
+- `https://www.google.com/*` — Used for executing searches and retrieving favicons.
 
-- `https://suggestqueries.google.com/*` for search suggestions
-- `https://www.google.com/*` for search and favicon/suggestion-related requests
+*Privacy Note: No backend tracking service is used. All state and data remain completely
+local to the user&#39;s browser profile.*
 
-No backend service is used. All state remains local to the browser profile.
+---
 
 ## 7. Development Notes
 
-- Manifest version: `3`
-- New Tab override entry: `chrome_url_overrides.newtab = newtab.html`
-- Main logic initialization sequence:
-	1. Load shortcuts
-	2. Load tasks
-	3. Load settings
-	4. Apply settings
-	5. Render UI
+- **Manifest Version:** MV3
+- **New Tab Override Entry:** `&quot;chrome_url_overrides&quot;: { &quot;newtab&quot;: &quot;newtab.html&quot; }`
+- **Initialization Sequence:**
+1. Load shortcuts
+2. Load tasks
+3. Load settings
+4. Apply user settings to the DOM
+5. Render the final UI
+
+---
 
 ## 8. Troubleshooting
 
-### Extension does not update after editing
+### Extension does not update after editing code
+1. Navigate to `chrome://extensions`.
+2. Click the **Reload** icon on the extension&#39;s card.
+3. Open a fresh new tab to see the changes.
 
-1. Go to `chrome://extensions`.
-2. Click reload on the extension card.
-3. Open a new tab again.
+### Search suggestions are not appearing
+- Check your active internet connection.
+- Verify that the host permissions in `manifest.json` have not been accidentally removed or
+modified.
 
-### Suggestions are not appearing
+### Background or settings reset unexpectedly
+- Ensure browser settings aren&#39;t configured to clear local storage on exit.
+- Reapply your settings and verify if your specific browser profile allows persistent storage
+for unpacked extensions.
 
-- Confirm internet connectivity.
-- Confirm extension host permissions were not modified.
+---
 
-### Background resets unexpectedly
+## 9. Version History
 
-- Check whether local storage was cleared.
-- Reapply settings and verify browser profile persistence settings.
-
-## 9. Version
-
-- Extension version: `1.1.2`
-- Last documentation update: April 12, 2026
+- **Extension version:** `1.1.2`
+- **Last documentation update:** July 24, 2026
