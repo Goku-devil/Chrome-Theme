@@ -1,8 +1,14 @@
-# Install the Chrome Extension
+# Install the Extension
 
-This project is a Chrome extension that replaces the New Tab page.
+This project is a Chromium extension that replaces the New Tab page.
 
-## Step-by-step
+## Guide for installing on edge
+Go to the official Edge Add-ons store to install the extension directly. Please note that this method only works for the Microsoft Edge browser.
+
+To install it on other browsers, please follow the alternative method specified below.
+For Edge,[click here](https://microsoftedge.microsoft.com/addons/detail/pfhncogmoeopdpfokomlldgigafbbgdk)
+
+## Step-by-step Guide for other chromium based Browsers
 
 1. Open Google Chrome.
 2. In the address bar, go to `chrome://extensions`.
