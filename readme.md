@@ -1,6 +1,6 @@
 # Custom Chrome Home Documentation
 
-Custom Chrome Home is a Chrome extension that replaces the New Tab page with a productivity dashboard.
+Custom Chrome Home is a Chromium extension that replaces the New Tab page with a productivity dashboard.
 
 ## 1. Overview
 
