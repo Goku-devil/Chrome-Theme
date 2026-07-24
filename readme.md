@@ -38,9 +38,8 @@ The extension provides a centralized, distraction-free hub featuring:
 For detailed manual installation instructions, please refer to the `INSTALL.md` file.
 
 To install the extension directly on Microsoft Edge, download it from the official store:
-�� **[Install from the Edge Add-on
-Store](https://microsoftedge.microsoft.com/addons/detail/pfhncogmoeopdpfokomlldgiga
-fbbgdk)**
+**[Install from the Edge Add-on
+Store](https://microsoftedge.microsoft.com/addons/detail/pfhncogmoeopdpfokomlldgigafbbgdk)**
 
 ---
 
@@ -89,23 +88,6 @@ external databases are used.
 | `customHomeTasks` | Array of task objects: `{ id, text, done, createdAt }` |
 | `customHomeSettings` | Object storing theme, layout, template, and background
 preferences. |
-
-### Default Settings Configuration
-```json
-{
-&quot;theme&quot;: &quot;ocean&quot;,
-&quot;terminalMode&quot;: false,
-&quot;layout&quot;: &quot;centered&quot;,
-&quot;background&quot;: &quot;assets/image.png&quot;,
-&quot;template&quot;: &quot;aurora&quot;,
-&quot;custom&quot;: {
-&quot;primary&quot;: &quot;#4cc9f0&quot;,
-&quot;secondary&quot;: &quot;#3a86ff&quot;,
-&quot;glow&quot;: &quot;#ffffff&quot;,
-&quot;speed&quot;: 8
-}
-}
-```
 
 ---
 
